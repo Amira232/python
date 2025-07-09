@@ -12,22 +12,22 @@ try:
     TENSORFLOW_AVAILABLE = True
 except ImportError:
     TENSORFLOW_AVAILABLE = False
-    st.warning("\u26a0\ufe0f TensorFlow not found. Running in demo mode with simulated predictions.")
+    st.warning("Warning: TensorFlow not found. Running in demo mode with simulated predictions.")
 
-# Page configuration
+# Page configuration (replace emoji with ASCII text for encoding safety)
 st.set_page_config(
     page_title="Satellite Image Classifier",
-    page_icon="\ud83d\ude80",
+    page_icon="Satellite",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # Class information
 CLASS_INFO = {
-    'Cloudy': {'description': 'Areas covered by clouds.', 'color': '#87CEEB', 'icon': '☁️'},
-    'Desert': {'description': 'Dry, arid regions.', 'color': '#F4A460', 'icon': '🏜️'},
-    'Green_Area': {'description': 'Vegetated areas.', 'color': '#228B22', 'icon': '🌳'},
-    'Water': {'description': 'Water bodies.', 'color': '#4682B4', 'icon': '💧'}
+    'Cloudy': {'description': 'Areas covered by clouds.', 'color': '#87CEEB', 'icon': 'Cloudy'},
+    'Desert': {'description': 'Dry, arid regions.', 'color': '#F4A460', 'icon': 'Desert'},
+    'Green_Area': {'description': 'Vegetated areas.', 'color': '#228B22', 'icon': 'Green'},
+    'Water': {'description': 'Water bodies.', 'color': '#4682B4', 'icon': 'Water'}
 }
 
 @st.cache_resource
@@ -61,9 +61,9 @@ def predict_image(model, img_array):
     return predicted_class, confidence, probabilities
 
 def main():
-    st.title("\ud83d\ude80 Satellite Image Classifier")
+    st.title("Satellite Image Classifier")
 
-    st.sidebar.header("\ud83d\udccb Instructions")
+    st.sidebar.header("Instructions")
     st.sidebar.markdown("""
     1. Upload a satellite image
     2. The app will classify it as Cloudy, Desert, Green Area, or Water
@@ -85,25 +85,25 @@ def main():
 
         icon = CLASS_INFO[predicted_class]['icon']
         desc = CLASS_INFO[predicted_class]['description']
-        st.success(f"**Prediction:** {icon} {predicted_class} ({confidence:.1%})")
+        st.success(f"Prediction: {icon} ({confidence:.1%})")
         st.caption(desc)
 
-        st.subheader("\ud83d\udcca Confidence Scores")
+        st.subheader("Confidence Scores")
         conf_df = pd.DataFrame.from_dict(probabilities, orient='index', columns=["Confidence"])
         st.bar_chart(conf_df)
 
-        st.subheader("\ud83d\udcc8 Detailed Table")
+        st.subheader("Detailed Table")
         sorted_probs = sorted(probabilities.items(), key=lambda x: x[1], reverse=True)
         table_df = pd.DataFrame({
-            "Class": [f"{CLASS_INFO[c]['icon']} {c}" for c, _ in sorted_probs],
+            "Class": [f"{CLASS_INFO[c]['icon']}" for c, _ in sorted_probs],
             "Confidence": [f"{v:.2%}" for _, v in sorted_probs]
         })
         st.dataframe(table_df, use_container_width=True)
 
-        st.subheader("\ud83d\udcc4 Image Info")
-        st.write(f"**Size:** {image_pil.size}")
-        st.write(f"**Mode:** {image_pil.mode}")
-        st.write(f"**Format:** {image_pil.format or 'Unknown'}")
+        st.subheader("Image Info")
+        st.write(f"Size: {image_pil.size}")
+        st.write(f"Mode: {image_pil.mode}")
+        st.write(f"Format: {image_pil.format or 'Unknown'}")
 
 if __name__ == "__main__":
     main()
